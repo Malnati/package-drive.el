@@ -50,8 +50,30 @@
 ;;
 ;;; Code:
 
+(require 'package)
+(package-initialize)
+
+(defun pd/setup-melpa-f
+  (interactive)    
+  "Setup of the package Melpa stable and unstable repositories."
+  (add-to-list 'package-archives '("unstable" . "https://melpa.org/packages/") t)
+  (add-to-list 'package-archives '("stable" . "https://stable.melpa.org/packages/") t)
+  (package-refresh-contents))
+
 (eval-when-compile
-  (require 'f))
+  (condition-case nil
+    (require 'f)
+  (file-error
+   '(pd/setup-melpa-f)
+   (package-install 'f)
+   (require 'f))))
+
+(condition-case nil
+  (require 'use-package)
+  (file-error
+   '(pd/setup-melpa-f)
+   (package-install 'use-package)
+   (require 'use-package)))
 
 (defgroup package-drive nil
   "Setup directories of repositories by system-type, for adding use-package."
@@ -94,24 +116,18 @@ It is for using at MacOSX `system-type'."
   :group 'package-drive
   :type 'string)
 
-(defun pd/setup-melpa-f
-    (interactive)    
-  "Setup of the package Melpa stable and unstable repositories."
-  (require 'package)
-  (package-initialize)
-  (add-to-list 'package-archives '("unstable" . "https://melpa.org/packages/") t)
-  (add-to-list 'package-archives '("stable" . "https://stable.melpa.org/packages/") t)
-  (package-refresh-contents))
-
 (defun pd/setup-dirs-f
     (interactive)    
   "Setup location of the package archive."
-  (when (member system-type '(pc w32 ms-dos windows-nt cygwin))
-    (setq package-user-dir '(pd/mswin-dir)))
-  (when (member system-type '(ns darwin))
-    (setq package-user-dir '(pd/macos-dir)))
-  (when (member system-type '(gnu/linux gnu x))
-    (setq package-user-dir '(pd/linux-dir))))
+  (when
+      (member system-type '(pc w32 ms-dos windows-nt cygwin))
+    (setq package-user-dir pd/mswin-dir))
+  (when
+      (member system-type '(ns darwin))
+    (setq package-user-dir pd/macos-dir))
+  (when
+      (member system-type '(gnu/linux gnu x))
+    (setq package-user-dir pd/linux-dir)))
 
 (defun pd/setup-use-package-f
     (interactive)
