@@ -50,59 +50,51 @@
 ;;
 ;;; Code:
 
-(require 'package)
-(package-initialize)
+
+(defconst melpa-unstable-name-c "Melpa unstable")
+(defconst melpa-unstable-c "https://melpa.org/packages/")
+(defconst melpa-stable-name-c "macos")
+(defconst melpa-stable-c "https://stable.melpa.org/packages/")
 
 (defun pd/setup-melpa-f
   (interactive)    
   "Setup of the package Melpa stable and unstable repositories."
-  (add-to-list 'package-archives '("unstable" . "https://melpa.org/packages/") t)
-  (add-to-list 'package-archives '("stable" . "https://stable.melpa.org/packages/") t)
-  (package-refresh-contents))
-
-(eval-when-compile
-  (condition-case nil
-    (require 'f)
-  (file-error
-   '(pd/setup-melpa-f)
-   (package-install 'f)
-   (require 'f))))
-
-(condition-case nil
-  (require 'use-package)
-  (file-error
-   '(pd/setup-melpa-f)
-   (package-install 'use-package)
-   (require 'use-package)))
+  (add-to-list 'package-archives '(melpa-unstable-name-c . melpa-unstable-c) t)
+  (add-to-list 'package-archives '(melpa-stable-name-c . melpa-stable-c) t))
 
 (defgroup package-drive nil
   "Setup directories of repositories by system-type, for adding use-package."
   :group 'package-drive
   :link '(url-link :tag "Homepage" "https://github.com/Malnati/.package-drive.el.git"))
 
-(defcustom pd/mswin-sufix "mswin"
+(defconst elpa-mswin-path-sufix-c "mswin")
+
+(defvar pd/mswin-sufix elpa-mswin-path-sufix-c
   "Defines elpa's mswin sufix path.
-It is for using at Microsoft Windows `system-type'."
-  :group 'package-drive
-  :type 'string)
+It is for using at Microsoft Windows `system-type'.")
 
-(defcustom pd/mswin-dir (f-join user-emacs-directory pd/mswin-sufix)
+(defvar pd/mswin-dir nil
   "Defines elpa's directory path.
-It is for using at Microsoft Windows `system-type'."
-  :group 'package-drive
-  :type 'string)
+It is for using at Microsoft Windows `system-type'.")
 
-(defcustom pd/linux-sufix "linux"
+(defun pd/setup-mswin-dir-f (sufix)
+  (interactive)
+  "Setup location of the package archive for Ms Windows."
+  (setq pd/mswin-dir (concat user-emacs-directory sufix)))
+
+(defconst elpa-path-linux-sufix-c "linux")
+
+(defvar pd/linux-sufix nil
   "Defines elpa's linux sufix path.
-It is for using at Linux `system-type'."
-  :group 'package-drive
-  :type 'string)
+It is for using at Linux `system-type'.")
 
 (defcustom pd/linux-dir (f-join user-emacs-directory pd/linux-sufix)
   "Defines elpa's directory path.
 It is for using at Linux `system-type'."
   :group 'package-drive
   :type 'string)
+
+(defconst macos "macos")
 
 (defcustom pd/macos-sufix "macos"
   "Defines elpa's macos sufix path.
@@ -146,6 +138,9 @@ It is for using at MacOSX `system-type'."
      (pd/setup-dirs-f)
      (pd/setup-melpa-f)
      (dp/setup-use-package-f))
+
+
+(setq (concat user-emacs-directory pd/mswin-sufix))
 
 (provide 'package-drive)
 
