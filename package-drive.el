@@ -107,11 +107,11 @@ It is for using at MacOSX `system-type'."
     (interactive)    
   "Setup location of the package archive."
   (when (member system-type '(pc w32 ms-dos windows-nt cygwin))
-    (setq package-user-dir pd/mswin-dir))
+    (setq package-user-dir '(pd/mswin-dir)))
   (when (member system-type '(ns darwin))
-    (setq package-user-dir pd/macos-dir))
+    (setq package-user-dir '(pd/macos-dir)))
   (when (member system-type '(gnu/linux gnu x))
-    (setq package-user-dir pd/linux-dir)))
+    (setq package-user-dir '(pd/linux-dir))))
 
 (defun pd/setup-use-package-f
     (interactive)
@@ -120,6 +120,7 @@ It is for using at MacOSX `system-type'."
       (require 'use-package)
     (file-error
      (require 'package)
+     (pd/setup-melpa-f)
      (package-install 'use-package)
      (require 'use-package))))
 
@@ -130,6 +131,6 @@ It is for using at MacOSX `system-type'."
      (pd/setup-melpa-f)
      (dp/setup-use-package-f))
 
-(provide '.package-drive)
+(provide 'package-drive)
 
 ;;; .package-drive.el ends here
