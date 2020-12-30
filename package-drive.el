@@ -1,9 +1,9 @@
-;;; packages --- .package-basic.el
-
+;;; packages --- .package-drive.el
+;;
 ;; Copyright (C) 2020 Ricardo Malnati Rosa Lima
 ;;
 ;; Author: Ricardo Malnati <ricardomalnati@gmail.com>
-;; Homepage: https://github.com/Malnati/.package-basic.el.git
+;; Homepage: https://github.com/Malnati/.package-drive.el.git
 ;; Version: 1.0.0
 ;; Package-Version:
 ;; Package-Commit: 
@@ -34,65 +34,67 @@
 ;;
 ;; Install:
 ;;
-;; Copy to `.pbl.el' your .emacs.d/ and add
-;; `(load-file "~/.emacs.d/.package-basic.el")' to your `~/.emacs' file
+;; Copy to `.package-drive.el' your .emacs.d/ and add
+;; `(load-file "~/.emacs.d/.package-drive.el")' to your `~/.emacs' file
 ;;
 ;; There are just the functions below, you can use:
 ;;
-;; 1) M-x `package-basic-setup'
+;; 1) M-x `pd/setup-melpa-f'
 ;;        "Setup of the package Melpa stable and unstable repositories."
-;; 2) M-x `package-basic-setup-dirs'
+;; 2) M-x `pd/setup-dirs-f'
 ;;        "Setup location of the package archive by system-type."
-;; e) M-x `package-basic-setup-all'
+;; 3) M-x `pd/setup-use-package-f'
+;;        "Setup use-package."
+;; 4) M-x `pd/setup-full-f'
 ;;        "Setup directories, Melpa repositories for adding use-package."
 ;;
 ;;; Code:
 
 (eval-when-compile
-(require 'f))
+  (require 'f))
 
-(defgroup package-basic nil
+(defgroup package-drive nil
   "Setup directories of repositories by system-type, for adding use-package."
-  :group 'package-basic
-  :link '(url-link :tag "Homepage" "https://github.com/Malnati/.package-basic.el.git"))
+  :group 'package-drive
+  :link '(url-link :tag "Homepage" "https://github.com/Malnati/.package-drive.el.git"))
 
-(defcustom package-basic-mswin-sufix "mswin"
+(defcustom pd/mswin-sufix "mswin"
   "Defines elpa's mswin sufix path.
 It is for using at Microsoft Windows `system-type'."
-  :group 'package-basic
+  :group 'package-drive
   :type 'string)
 
-(defcustom package-basic-mswin-dir (f-join user-emacs-directory package-basic-mswin-sufix)
+(defcustom pd/mswin-dir (f-join user-emacs-directory pd/mswin-sufix)
   "Defines elpa's directory path.
 It is for using at Microsoft Windows `system-type'."
-  :group 'package-basic
+  :group 'package-drive
   :type 'string)
 
-(defcustom package-basic-linux-sufix "linux"
+(defcustom pd/linux-sufix "linux"
   "Defines elpa's linux sufix path.
 It is for using at Linux `system-type'."
-  :group 'package-basic
+  :group 'package-drive
   :type 'string)
 
-(defcustom package-basic-linux-dir (f-join user-emacs-directory package-basic-linux-sufix)
+(defcustom pd/linux-dir (f-join user-emacs-directory pd/linux-sufix)
   "Defines elpa's directory path.
 It is for using at Linux `system-type'."
-  :group 'package-basic
+  :group 'package-drive
   :type 'string)
 
-(defcustom package-basic-macos-sufix "macos"
+(defcustom pd/macos-sufix "macos"
   "Defines elpa's macos sufix path.
 It is for using at Microsoft Windows `system-type'."
-  :group 'package-basic
+  :group 'package-drive
   :type 'string)
 
-(defcustom package-basic-macos-dir (f-join user-emacs-directory package-basic-macos-sufix)
+(defcustom pd/macos-dir (f-join user-emacs-directory pd/macos-sufix)
   "Defines elpa's directory path.
 It is for using at MacOSX `system-type'."
-  :group 'package-basic
+  :group 'package-drive
   :type 'string)
 
-(defun package-basic-setup-melpa-f
+(defun pd/setup-melpa-f
     (interactive)    
   "Setup of the package Melpa stable and unstable repositories."
   (require 'package)
@@ -101,28 +103,33 @@ It is for using at MacOSX `system-type'."
   (add-to-list 'package-archives '("stable" . "https://stable.melpa.org/packages/") t)
   (package-refresh-contents))
 
-(defun package-basic-setup-dirs-f
+(defun pd/setup-dirs-f
     (interactive)    
   "Setup location of the package archive."
-  (when (member window-system '(pc w32 ms-dos windows-nt cygwin))
-    (setq package-user-dir package-basic-macos-dir))
+  (when (member system-type '(pc w32 ms-dos windows-nt cygwin))
+    (setq package-user-dir pd/mswin-dir))
   (when (member system-type '(ns darwin))
-    (setq package-user-dir package-basic-macos-dir))
+    (setq package-user-dir pd/macos-dir))
   (when (member system-type '(gnu/linux gnu x))
-    (setq package-user-dir package-basic-macos-dir)))
+    (setq package-user-dir pd/linux-dir)))
 
-(defun package-basic-setup-f
+(defun pd/setup-use-package-f
     (interactive)
-  "Setup directories, Melpa repositories for adding use-package."
+  "Setup use-package."
   (condition-case nil
       (require 'use-package)
     (file-error
      (require 'package)
-     (package-basic-setup-dir-f)
-     (package-basic-setup-melpa-f)
      (package-install 'use-package)
      (require 'use-package))))
 
-(provide '.package-basic)
+(defun pd/setup-full-f
+    (interactive)
+  "Setup directories, Melpa repositories for adding use-package."
+     (pd/setup-dirs-f)
+     (pd/setup-melpa-f)
+     (dp/setup-use-package-f))
 
-;;; .package-basic.el ends here
+(provide '.package-drive)
+
+;;; .package-drive.el ends here
