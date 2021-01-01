@@ -50,22 +50,13 @@
 ;;
 ;;; Code:
 
-
-(defconst melpa-unstable-name-c "Melpa unstable")
-(defconst melpa-unstable-c "https://melpa.org/packages/")
-(defconst melpa-stable-name-c "macos")
-(defconst melpa-stable-c "https://stable.melpa.org/packages/")
-
-(defun pd/setup-melpa-f
-  (interactive)    
-  "Setup of the package Melpa stable and unstable repositories."
-  (add-to-list 'package-archives '(melpa-unstable-name-c . melpa-unstable-c) t)
-  (add-to-list 'package-archives '(melpa-stable-name-c . melpa-stable-c) t))
-
 (defgroup package-drive nil
-  "Setup directories of repositories by system-type, for adding use-package."
+  "Setup directories of repositories by system-type.
+For using over cloud storage like as Google, One, Drop, Drive, iCloud, etc."
   :group 'package-drive
-  :link '(url-link :tag "Homepage" "https://github.com/Malnati/.package-drive.el.git"))
+  :tag 'package-drive
+  :link '(url-link
+	  :tag "Homepage" "https://github.com/Malnati/.package-drive.el.git"))
 
 (defconst elpa-mswin-path-sufix-c "mswin")
 
@@ -77,67 +68,49 @@ It is for using at Microsoft Windows `system-type'.")
   "Defines elpa's directory path.
 It is for using at Microsoft Windows `system-type'.")
 
-(defun pd/setup-mswin-dir-f (sufix)
+(defun pd/setup-mswin-dir-f ()
   (interactive)
   "Setup location of the package archive for Ms Windows."
-  (setq pd/mswin-dir (concat user-emacs-directory sufix)))
+  (setq pd/mswin-dir (concat user-emacs-directory pd/mswin-sufix )))
 
-(defconst elpa-path-linux-sufix-c "linux")
+;; (defconst elpa-path-linux-sufix-c "linux")
 
-(defvar pd/linux-sufix nil
-  "Defines elpa's linux sufix path.
-It is for using at Linux `system-type'.")
+;; (defvar pd/linux-sufix nil
+;;   "Defines elpa's linux sufix path.
+;; It is for using at Linux `system-type'.")
 
-(defcustom pd/linux-dir (f-join user-emacs-directory pd/linux-sufix)
-  "Defines elpa's directory path.
-It is for using at Linux `system-type'."
-  :group 'package-drive
-  :type 'string)
+;; (defcustom pd/linux-dir (f-join user-emacs-directory pd/linux-sufix)
+;;   "Defines elpa's directory path.
+;; It is for using at Linux `system-type'."
+;;   :group 'package-drive
+;;   :type 'string)
 
-(defconst macos "macos")
+;; (defconst macos "macos")
 
-(defcustom pd/macos-sufix "macos"
-  "Defines elpa's macos sufix path.
-It is for using at Microsoft Windows `system-type'."
-  :group 'package-drive
-  :type 'string)
+;; (defcustom pd/macos-sufix "macos"
+;;   "Defines elpa's macos sufix path.
+;; It is for using at Microsoft Windows `system-type'."
+;;   :group 'package-drive
+;;   :type 'string)
 
-(defcustom pd/macos-dir (f-join user-emacs-directory pd/macos-sufix)
-  "Defines elpa's directory path.
-It is for using at MacOSX `system-type'."
-  :group 'package-drive
-  :type 'string)
+;; (defcustom pd/macos-dir (f-join user-emacs-directory pd/macos-sufix)
+;;   "Defines elpa's directory path.
+;; It is for using at MacOSX `system-type'."
+;;   :group 'package-drive
+;;   :type 'string)
 
-(defun pd/setup-dirs-f
-    (interactive)    
-  "Setup location of the package archive."
-  (when
-      (member system-type '(pc w32 ms-dos windows-nt cygwin))
-    (setq package-user-dir pd/mswin-dir))
-  (when
-      (member system-type '(ns darwin))
-    (setq package-user-dir pd/macos-dir))
-  (when
-      (member system-type '(gnu/linux gnu x))
-    (setq package-user-dir pd/linux-dir)))
-
-(defun pd/setup-use-package-f
-    (interactive)
-  "Setup use-package."
-  (condition-case nil
-      (require 'use-package)
-    (file-error
-     (require 'package)
-     (pd/setup-melpa-f)
-     (package-install 'use-package)
-     (require 'use-package))))
-
-(defun pd/setup-full-f
-    (interactive)
-  "Setup directories, Melpa repositories for adding use-package."
-     (pd/setup-dirs-f)
-     (pd/setup-melpa-f)
-     (dp/setup-use-package-f))
+;; (defun pd/setup-dirs-f ()
+;;     (interactive)    
+;;   "Setup location of the package archive."
+;;   (when
+;;       (member system-type '(pc w32 ms-dos windows-nt cygwin))
+;;     (setq package-user-dir pd/mswin-dir))
+;;   (when
+;;       (member system-type '(ns darwin))
+;;     (setq package-user-dir pd/macos-dir))
+;;   (when
+;;       (member system-type '(gnu/linux gnu x))
+;;     (setq package-user-dir pd/linux-dir)))
 
 
 (setq (concat user-emacs-directory pd/mswin-sufix))
